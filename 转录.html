@@ -519,7 +519,7 @@
 
     el.pageLabel.textContent = '第 ' + item.page + ' 页（' + (index + 1) + ' / ' + PAGES.length + '）';
     el.openOriginal.href = item.image || '#';
-    el.pageImage.src = item.thumb || item.image || 'images/placeholder.svg';
+    el.pageImage.src = item.image || item.thumb || 'images/placeholder.svg';
     el.pageImage.alt = '第 ' + item.page + ' 页';
 
     el.title.value = entry.title;

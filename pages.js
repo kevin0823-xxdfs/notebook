@@ -1,0 +1,43 @@
+/* 页面清单(图片)
+   —— 由 tools/import-pages.ps1 自动生成,重新运行会覆盖本文件。
+   所以文字内容请写在 data/notebook.js 里,不要写在这里。
+
+   字段:page(页码)image(大图)thumb(首页缩略图)w/h(宽高,用来占位) */
+window.NOTEBOOK_PAGES = [
+  { page: 1, image: "images/pages/page-001.jpg", thumb: "images/thumbs/page-001.jpg", w: 1800, h: 2400 },
+  { page: 2, image: "images/pages/page-002.jpg", thumb: "images/thumbs/page-002.jpg", w: 1800, h: 1350 },
+  { page: 3, image: "images/pages/page-003.jpg", thumb: "images/thumbs/page-003.jpg", w: 1800, h: 1350 },
+  { page: 4, image: "images/pages/page-004.jpg", thumb: "images/thumbs/page-004.jpg", w: 1800, h: 1350 },
+  { page: 5, image: "images/pages/page-005.jpg", thumb: "images/thumbs/page-005.jpg", w: 1800, h: 1350 },
+  { page: 6, image: "images/pages/page-006.jpg", thumb: "images/thumbs/page-006.jpg", w: 1800, h: 1350 },
+  { page: 7, image: "images/pages/page-007.jpg", thumb: "images/thumbs/page-007.jpg", w: 1800, h: 1350 },
+  { page: 8, image: "images/pages/page-008.jpg", thumb: "images/thumbs/page-008.jpg", w: 1800, h: 1350 },
+  { page: 9, image: "images/pages/page-009.jpg", thumb: "images/thumbs/page-009.jpg", w: 1800, h: 1350 },
+  { page: 10, image: "images/pages/page-010.jpg", thumb: "images/thumbs/page-010.jpg", w: 1800, h: 1350 },
+  { page: 11, image: "images/pages/page-011.jpg", thumb: "images/thumbs/page-011.jpg", w: 1800, h: 1350 },
+  { page: 12, image: "images/pages/page-012.jpg", thumb: "images/thumbs/page-012.jpg", w: 1800, h: 1350 },
+  { page: 13, image: "images/pages/page-013.jpg", thumb: "images/thumbs/page-013.jpg", w: 1800, h: 1350 },
+  { page: 14, image: "images/pages/page-014.jpg", thumb: "images/thumbs/page-014.jpg", w: 1800, h: 1350 },
+  { page: 15, image: "images/pages/page-015.jpg", thumb: "images/thumbs/page-015.jpg", w: 1800, h: 1350 },
+  { page: 16, image: "images/pages/page-016.jpg", thumb: "images/thumbs/page-016.jpg", w: 1800, h: 1350 },
+  { page: 17, image: "images/pages/page-017.jpg", thumb: "images/thumbs/page-017.jpg", w: 1800, h: 1350 },
+  { page: 18, image: "images/pages/page-018.jpg", thumb: "images/thumbs/page-018.jpg", w: 1800, h: 1350 },
+  { page: 19, image: "images/pages/page-019.jpg", thumb: "images/thumbs/page-019.jpg", w: 1800, h: 1350 },
+  { page: 20, image: "images/pages/page-020.jpg", thumb: "images/thumbs/page-020.jpg", w: 1800, h: 1350 },
+  { page: 21, image: "images/pages/page-021.jpg", thumb: "images/thumbs/page-021.jpg", w: 1800, h: 1350 },
+  { page: 22, image: "images/pages/page-022.jpg", thumb: "images/thumbs/page-022.jpg", w: 1800, h: 1350 },
+  { page: 23, image: "images/pages/page-023.jpg", thumb: "images/thumbs/page-023.jpg", w: 1800, h: 1350 },
+  { page: 24, image: "images/pages/page-024.jpg", thumb: "images/thumbs/page-024.jpg", w: 1800, h: 1350 },
+  { page: 25, image: "images/pages/page-025.jpg", thumb: "images/thumbs/page-025.jpg", w: 1800, h: 1350 },
+  { page: 26, image: "images/pages/page-026.jpg", thumb: "images/thumbs/page-026.jpg", w: 1800, h: 1350 },
+  { page: 27, image: "images/pages/page-027.jpg", thumb: "images/thumbs/page-027.jpg", w: 1800, h: 1350 },
+  { page: 28, image: "images/pages/page-028.jpg", thumb: "images/thumbs/page-028.jpg", w: 1800, h: 1350 },
+  { page: 29, image: "images/pages/page-029.jpg", thumb: "images/thumbs/page-029.jpg", w: 1800, h: 1350 },
+  { page: 30, image: "images/pages/page-030.jpg", thumb: "images/thumbs/page-030.jpg", w: 1800, h: 1350 },
+  { page: 31, image: "images/pages/page-031.jpg", thumb: "images/thumbs/page-031.jpg", w: 1800, h: 1350 },
+  { page: 32, image: "images/pages/page-032.jpg", thumb: "images/thumbs/page-032.jpg", w: 1800, h: 1350 },
+  { page: 33, image: "images/pages/page-033.jpg", thumb: "images/thumbs/page-033.jpg", w: 1800, h: 1350 },
+  { page: 34, image: "images/pages/page-034.jpg", thumb: "images/thumbs/page-034.jpg", w: 1800, h: 1350 },
+  { page: 35, image: "images/pages/page-035.jpg", thumb: "images/thumbs/page-035.jpg", w: 1800, h: 1350 },
+  { page: 36, image: "images/pages/page-036.jpg", thumb: "images/thumbs/page-036.jpg", w: 1800, h: 2400 }
+];
