@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="一本小本子">
+  <rect width="64" height="64" rx="13" fill="#a63d2b"/>
+  <rect x="14" y="10" width="36" height="44" rx="3" fill="#fdf9f0"/>
+  <line x1="22" y1="10" x2="22" y2="54" stroke="#d9a7a0" stroke-width="2"/>
+  <g stroke="#c3d4e4" stroke-width="2.2" stroke-linecap="round">
+    <line x1="29" y1="21" x2="44" y2="21"/>
+    <line x1="29" y1="31" x2="44" y2="31"/>
+    <line x1="29" y1="41" x2="40" y2="41"/>
+  </g>
+</svg>

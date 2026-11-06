@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>一本小本子 · 2026 高三记事本</title>
+  <meta name="description" content="2026 年高三的一本小本子，记着一些有意思的小事。一页一页翻，慢慢看。">
+  <meta name="theme-color" content="#efe6d4">
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <a class="skip" href="#archive">跳到全部页面</a>
+
+  <header class="hero">
+    <div class="wrap">
+      <div class="seal" aria-hidden="true">留存</div>
+      <p class="eyebrow">二〇二六 · 高三</p>
+      <h1>一本小本子</h1>
+      <p class="tagline">
+        高三那年，我把每天觉得有意思的事记在这本薄薄的本子里。<br>
+        现在想把它留得久一点。
+      </p>
+
+      <ul class="stats">
+        <li><b id="stat-pages">—</b><span>页收录</span></li>
+        <li><b id="stat-text">—</b><span>页转成了文字</span></li>
+        <li><b id="stat-span">—</b><span>年份跨度</span></li>
+      </ul>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="random" type="button">随便翻一页</button>
+        <a class="btn btn-ghost" href="#archive">按顺序看</a>
+      </div>
+
+      <div class="demo" id="demo" hidden>
+        <p class="demo-text">
+          <span><strong>36 页照片已经进来了</strong>。</span>
+          接下来打开 <a href="转录.html"><strong>转录工具</strong></a>，一页页把字敲上去；没抄的页会显示「待转录」，不影响看图。
+        </p>
+        <button class="demo-close" id="demo-close" type="button" aria-label="关闭这条提示">×</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="archive wrap" id="archive">
+      <div class="section-head">
+        <h2>全部页面</h2>
+        <p class="count" id="count">正在读取…</p>
+      </div>
+
+      <div class="toolbar">
+        <label class="search" for="search">
+          <svg class="search-icon" viewBox="0 0 20 20" aria-hidden="true">
+            <circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.6"/>
+            <path d="M13 13l4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
+          </svg>
+          <input id="search" type="search" placeholder="搜一句话、一个名字、一件小事…" autocomplete="off">
+          <kbd>/</kbd>
+        </label>
+        <div class="chips" id="chips" role="group" aria-label="按标签筛选"></div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+      <p class="empty" id="empty" hidden>没找到。换个说法试试，或者点一下「全部」。</p>
+    </section>
+
+    <section class="about wrap" aria-labelledby="about-title">
+      <h2 id="about-title">关于这个网站</h2>
+      <div class="about-grid">
+        <article>
+          <h3>一页一页</h3>
+          <p>左边是拍下来的本子，右边是把它誊成文字的样子。图是母版，字是备份——两种都留着，哪一份坏了都还有另一份。</p>
+        </article>
+        <article>
+          <h3>什么都没有依赖</h3>
+          <p>没有框架、没有字体库、没有外链。整个文件夹拷进 U 盘，双击 <code>index.html</code> 就能看，断网也行。</p>
+        </article>
+        <article>
+          <h3>它可以一直活下去</h3>
+          <p>文字是纯文本，图片是通用格式，数据是一个直接能读的 js 文件。三五十年后，它大概还打得开。</p>
+        </article>
+      </div>
+      <div class="about-actions">
+        <button class="btn btn-ghost" id="print" type="button">打印 / 存成 PDF</button>
+        <span class="hint">怎么加页、怎么备份，写在根目录的 README.md 里。</span>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer wrap">
+    <p>一本小本子 · 建于 2026 年 11 月 · 数据都在 <code>data/</code> 里</p>
+    <p class="footer-hint">哪天网页打不开了也没关系：图片在 <code>images/</code>，文字在 <code>data/notebook.js</code>，用记事本就能读。</p>
+    <p class="footer-hint">想补文字：打开 <a href="转录.html">转录工具</a>，一页页敲，点「导出」后覆盖 <code>data/notebook.js</code>。</p>
+  </footer>
+
+  <!-- 阅读器 -->
+  <div class="reader" id="reader" hidden>
+    <div class="reader-backdrop" data-close></div>
+    <div class="reader-sheet" role="dialog" aria-modal="true" aria-labelledby="reader-title">
+      <button class="reader-close" id="reader-close" type="button" aria-label="关闭">×</button>
+
+      <div class="reader-media">
+        <a id="reader-orig" href="#" target="_blank" rel="noopener">
+          <img id="reader-img" src="" alt="">
+          <span class="orig-hint">点开看原图 ↗</span>
+        </a>
+      </div>
+
+      <div class="reader-body">
+        <p class="reader-meta">
+          <span class="reader-page" id="reader-page">P.01</span>
+          <span id="reader-date"></span>
+          <span id="reader-place"></span>
+        </p>
+        <h2 id="reader-title">—</h2>
+        <div class="transcript" id="reader-text"></div>
+        <div class="reader-note" id="reader-note" hidden>
+          <span class="note-label">后来想起</span>
+          <p id="reader-note-text"></p>
+        </div>
+        <ul class="reader-tags" id="reader-tags"></ul>
+
+        <div class="reader-nav">
+          <button class="btn btn-small" id="prev" type="button">← 上一页</button>
+          <span class="reader-pos" id="reader-pos"></span>
+          <button class="btn btn-small" id="next" type="button">下一页 →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <noscript>
+    <p class="noscript">
+      这个页面要用 JavaScript 才能翻页。不过别担心：文字都在 <code>data/notebook.js</code> 里，
+      图片都在 <code>images/pages/</code> 里，用记事本和看图软件也一样能看到。
+    </p>
+  </noscript>
+
+  <script src="data/pages.js"></script>
+  <script src="data/notebook.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

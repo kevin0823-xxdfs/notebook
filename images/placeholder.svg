@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 1200" width="900" height="1200" role="img" aria-label="这一页的图片没找到">
+  <rect width="900" height="1200" fill="#f6efe1"/>
+  <rect x="60" y="60" width="780" height="1080" rx="8" fill="none" stroke="#c9b89b" stroke-width="3" stroke-dasharray="12 10"/>
+  <g fill="none" stroke="#b6a488" stroke-width="2.5" opacity="0.75" stroke-linejoin="round">
+    <rect x="300" y="460" width="300" height="220" rx="10"/>
+    <circle cx="372" cy="522" r="18"/>
+    <path d="M302 652l82-82 68 68 58-48 88 88"/>
+  </g>
+  <text x="450" y="762" text-anchor="middle" font-family="'Microsoft YaHei','PingFang SC',sans-serif" font-size="30" fill="#8a7e6c">这一页的图片没找到</text>
+  <text x="450" y="816" text-anchor="middle" font-family="'Microsoft YaHei','PingFang SC',sans-serif" font-size="20" fill="#a2957f">检查 data/pages.js 里的 image 路径</text>
+</svg>

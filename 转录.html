@@ -1,0 +1,720 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>转录 · 一本小本子</title>
+<meta name="theme-color" content="#efe6d4">
+<link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+<style>
+  :root {
+    --paper: #efe6d4;
+    --paper-light: #fbf6ea;
+    --paper-page: #fdf9f0;
+    --ink: #2f2a22;
+    --ink-2: #5d5446;
+    --ink-3: #8a7e6c;
+    --rule: #d9ccb3;
+    --accent: #a63d2b;
+    --serif: "Songti SC", "STSong", "Source Han Serif SC", "Noto Serif SC", "SimSun", "宋体", serif;
+    --kai: "Kaiti SC", "KaiTi", "STKaiti", "楷体", serif;
+    --sans: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Segoe UI", system-ui, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ---------- 顶栏 ---------- */
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 22px;
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--rule);
+    background: rgba(251, 246, 234, 0.92);
+    position: relative;
+    z-index: 5;
+  }
+
+  .brand {
+    font-family: var(--kai);
+    font-size: 20px;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+
+  .brand small {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    color: var(--ink-3);
+    letter-spacing: 0.04em;
+    margin-left: 8px;
+  }
+
+  .grow { flex: 1; }
+
+  .progress {
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--ink-3);
+    white-space: nowrap;
+  }
+
+  .progress b { color: var(--accent); font-weight: 600; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border: 1px solid rgba(120, 100, 70, 0.32);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.45);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background-color 0.18s ease, transform 0.18s ease;
+  }
+
+  .btn:hover { background: #fff; transform: translateY(-1px); }
+
+  .btn-primary {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper-light);
+  }
+
+  .btn-primary:hover { background: #423827; border-color: #423827; }
+
+  .btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+
+  /* ---------- 主区域 ---------- */
+  .layout {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(0, 0.92fr);
+    gap: 0;
+  }
+
+  .viewer {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    padding: 14px 18px 12px;
+    background: #e9dfca;
+    border-right: 1px solid var(--rule);
+  }
+
+  .viewer-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .page-label {
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    color: var(--ink-2);
+    min-width: 96px;
+    text-align: center;
+  }
+
+  .viewer-nav .btn { padding: 6px 14px; font-size: 12.5px; }
+
+  .jump {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-3);
+  }
+
+  .jump input {
+    width: 58px;
+    padding: 5px 8px;
+    border: 1px solid rgba(120, 100, 70, 0.3);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.6);
+    font-family: var(--sans);
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+
+  .stage {
+    flex: 1;
+    min-height: 0;
+    display: grid;
+    place-items: center;
+    overflow: auto;
+  }
+
+  .stage img {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    background: #fff;
+    box-shadow: 0 14px 34px -16px rgba(40, 30, 15, 0.5);
+  }
+
+  .dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 10px;
+  }
+
+  .dot {
+    width: 26px;
+    height: 22px;
+    border: 1px solid rgba(120, 100, 70, 0.28);
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.4);
+    font-family: var(--sans);
+    font-size: 10px;
+    line-height: 1;
+    color: var(--ink-3);
+    cursor: pointer;
+    padding: 0;
+  }
+
+  .dot:hover { background: #fff; }
+
+  .dot.has-text {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
+  .dot.current {
+    outline: 2px solid var(--ink);
+    outline-offset: 1px;
+  }
+
+  /* ---------- 右侧表单 ---------- */
+  .form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
+    padding: 16px 20px 18px;
+    background: var(--paper-light);
+    overflow-y: auto;
+  }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+
+  .field > span {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    color: var(--ink-3);
+  }
+
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  input[type="text"],
+  input[type="date"],
+  textarea {
+    width: 100%;
+    padding: 8px 11px;
+    border: 1px solid rgba(120, 100, 70, 0.26);
+    border-radius: 6px;
+    background: #fffdf7;
+    color: var(--ink);
+    font-family: var(--serif);
+    font-size: 14.5px;
+    line-height: 1.7;
+    outline: none;
+    transition: border-color 0.16s ease, box-shadow 0.16s ease;
+  }
+
+  input:focus, textarea:focus {
+    border-color: rgba(166, 61, 43, 0.5);
+    box-shadow: 0 0 0 3px rgba(166, 61, 43, 0.09);
+  }
+
+  textarea { resize: vertical; min-height: 90px; }
+
+  .body-field textarea { min-height: 220px; flex: 1; }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin-top: 2px;
+  }
+
+  .hint {
+    margin: 2px 0 0;
+    font-family: var(--sans);
+    font-size: 11.5px;
+    line-height: 1.8;
+    color: var(--ink-3);
+  }
+
+  .saved {
+    font-family: var(--sans);
+    font-size: 11.5px;
+    color: var(--ink-3);
+    margin-left: auto;
+  }
+
+  /* ---------- 提示条 ---------- */
+  .toast {
+    position: fixed;
+    left: 50%;
+    bottom: 26px;
+    transform: translateX(-50%) translateY(10px);
+    padding: 10px 20px;
+    border-radius: 999px;
+    background: rgba(47, 42, 34, 0.92);
+    color: #fbf6ea;
+    font-family: var(--sans);
+    font-size: 13px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.22s ease, transform 0.22s ease;
+    z-index: 50;
+  }
+
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .empty-state {
+    margin: 40px auto;
+    max-width: 460px;
+    font-family: var(--sans);
+    font-size: 13.5px;
+    line-height: 2;
+    color: var(--ink-2);
+    text-align: center;
+  }
+
+  @media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .viewer { border-right: 0; border-bottom: 1px solid var(--rule); }
+    .stage img { max-height: 44vh; }
+    .body-field textarea { min-height: 140px; }
+    .bar { gap: 10px 14px; }
+    .brand { font-size: 17px; }
+  }
+
+  @media print { .bar, .viewer { display: none; } }
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="brand">转录<small>一本小本子</small></div>
+  <div class="progress"><b id="doneCount">0</b> / <span id="totalCount">0</span> 页已写</div>
+  <div class="grow"></div>
+  <button class="btn" id="prev" type="button">← 上一页</button>
+  <button class="btn" id="next" type="button">下一页 →</button>
+  <button class="btn btn-primary" id="export" type="button">导出 notebook.js</button>
+</header>
+
+<main class="layout">
+  <section class="viewer">
+    <div class="viewer-nav">
+      <span class="page-label" id="pageLabel">第 1 页</span>
+      <a class="btn" id="openOriginal" href="#" target="_blank" rel="noopener">原图 ↗</a>
+      <span class="jump">
+        跳到
+        <input id="jumpTo" type="number" min="1" inputmode="numeric" aria-label="跳到第几页">
+        页
+      </span>
+    </div>
+    <div class="stage">
+      <img id="pageImage" src="" alt="">
+    </div>
+    <div class="dots" id="dots"></div>
+  </section>
+
+  <section class="form">
+    <div class="field">
+      <span>小标题</span>
+      <input id="f-title" type="text" placeholder="一两个词，比如「停电的十分钟」">
+    </div>
+
+    <div class="row">
+      <div class="field">
+        <span>日期</span>
+        <input id="f-date" type="text" placeholder="2026-06-14（没有就不填）">
+      </div>
+      <div class="field">
+        <span>地点 / 是谁写的</span>
+        <input id="f-place" type="text" placeholder="比如：高三(2)班 教室">
+      </div>
+    </div>
+
+    <div class="field body-field">
+      <span>正文（照原样抄，换行会保留）</span>
+      <textarea id="f-text" placeholder="一页一页来。错别字、缩写、涂改都别改，那才是当时的你们。"></textarea>
+    </div>
+
+    <div class="field">
+      <span>注释（十年后的你才懂的事）</span>
+      <textarea id="f-note" rows="2" placeholder="这个人是谁、当时为什么好笑、后来怎么样了……可以空着"></textarea>
+    </div>
+
+    <div class="field">
+      <span>标签（用逗号隔开）</span>
+      <input id="f-tags" type="text" placeholder="同学, 毕业, 食堂">
+    </div>
+
+    <div class="form-actions">
+      <button class="btn" id="clearPage" type="button">清空本页</button>
+      <span class="saved" id="savedHint">草稿自动存在这个浏览器里</span>
+    </div>
+
+    <p class="hint">
+      写一部分也没关系：随时点「导出 notebook.js」，用下载的文件覆盖 <code>data/notebook.js</code>，网站就会更新。<br>
+      草稿只存在这个浏览器里，换电脑或清缓存会丢——写完记得导出。
+    </p>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script src="data/pages.js"></script>
+<script src="data/notebook.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  var DRAFT_KEY = 'notebook-drafts-v1';
+  var PAGES = (window.NOTEBOOK_PAGES || [])
+    .filter(function (item) { return item && item.page !== undefined && item.page !== null; })
+    .slice()
+    .sort(function (a, b) { return Number(a.page) - Number(b.page); })
+    .map(function (item) { return { page: Number(item.page), image: item.image || '', thumb: item.thumb || item.image || '' }; });
+
+  var BASE = {};
+  (window.NOTEBOOK_TEXT || []).forEach(function (item) {
+    if (!item || item.page === undefined || item.page === null) return;
+    BASE[Number(item.page)] = {
+      title: str(item.title),
+      date: str(item.date),
+      place: str(item.place),
+      text: str(item.text),
+      note: str(item.note),
+      tags: normalizeTags(item.tags)
+    };
+  });
+
+  var drafts = loadDrafts();
+  var index = 0;
+  var hasStorage = storageOk();
+  var saveTimer = null;
+
+  function str(value) { return value === undefined || value === null ? '' : String(value); }
+
+  function normalizeTags(tags) {
+    if (!tags) return [];
+    if (typeof tags === 'string') return tags.split(/[,，、\s]+/).filter(Boolean);
+    return tags.map(function (t) { return String(t).trim(); }).filter(Boolean);
+  }
+
+  function storageOk() {
+    try {
+      localStorage.setItem('__probe__', '1');
+      localStorage.removeItem('__probe__');
+      return true;
+    } catch (err) { return false; }
+  }
+
+  function loadDrafts() {
+    try {
+      var raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (err) { return {}; }
+  }
+
+  function saveDrafts() {
+    if (!hasStorage) return;
+    try { localStorage.setItem(DRAFT_KEY, JSON.stringify(drafts)); } catch (err) { /* 忽略 */ }
+  }
+
+  function entryOf(page) {
+    var base = BASE[page] || {};
+    var draft = drafts[page] || {};
+    return {
+      title: draft.title !== undefined ? draft.title : (base.title || ''),
+      date: draft.date !== undefined ? draft.date : (base.date || ''),
+      place: draft.place !== undefined ? draft.place : (base.place || ''),
+      text: draft.text !== undefined ? draft.text : (base.text || ''),
+      note: draft.note !== undefined ? draft.note : (base.note || ''),
+      tags: draft.tags !== undefined ? draft.tags : (base.tags || [])
+    };
+  }
+
+  function hasContent(page) {
+    var e = entryOf(page);
+    return !!(e.title || e.text || e.note);
+  }
+
+  /* ---------- 元素 ---------- */
+  var el = {
+    prev: document.getElementById('prev'),
+    next: document.getElementById('next'),
+    export: document.getElementById('export'),
+    pageLabel: document.getElementById('pageLabel'),
+    openOriginal: document.getElementById('openOriginal'),
+    jumpTo: document.getElementById('jumpTo'),
+    pageImage: document.getElementById('pageImage'),
+    dots: document.getElementById('dots'),
+    doneCount: document.getElementById('doneCount'),
+    totalCount: document.getElementById('totalCount'),
+    savedHint: document.getElementById('savedHint'),
+    toast: document.getElementById('toast'),
+    clearPage: document.getElementById('clearPage'),
+    title: document.getElementById('f-title'),
+    date: document.getElementById('f-date'),
+    place: document.getElementById('f-place'),
+    text: document.getElementById('f-text'),
+    note: document.getElementById('f-note'),
+    tags: document.getElementById('f-tags')
+  };
+
+  var fields = ['title', 'date', 'place', 'text', 'note', 'tags'];
+
+  function toast(message) {
+    el.toast.textContent = message;
+    el.toast.classList.add('show');
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(function () { el.toast.classList.remove('show'); }, 2200);
+  }
+
+  /* ---------- 渲染 ---------- */
+  function render() {
+    var item = PAGES[index];
+    if (!item) return;
+    var entry = entryOf(item.page);
+
+    el.pageLabel.textContent = '第 ' + item.page + ' 页（' + (index + 1) + ' / ' + PAGES.length + '）';
+    el.openOriginal.href = item.image || '#';
+    el.pageImage.src = item.thumb || item.image || 'images/placeholder.svg';
+    el.pageImage.alt = '第 ' + item.page + ' 页';
+
+    el.title.value = entry.title;
+    el.date.value = entry.date;
+    el.place.value = entry.place;
+    el.text.value = entry.text;
+    el.note.value = entry.note;
+    el.tags.value = entry.tags.join('，');
+
+    el.prev.disabled = index === 0;
+    el.next.disabled = index === PAGES.length - 1;
+    el.jumpTo.value = item.page;
+
+    renderDots();
+    renderProgress();
+  }
+
+  function renderDots() {
+    var html = '';
+    PAGES.forEach(function (item, i) {
+      var cls = 'dot';
+      if (hasContent(item.page)) cls += ' has-text';
+      if (i === index) cls += ' current';
+      html += '<button type="button" class="' + cls + '" data-index="' + i + '" title="第 ' + item.page + ' 页">' + item.page + '</button>';
+    });
+    el.dots.innerHTML = html;
+  }
+
+  function renderProgress() {
+    var done = PAGES.filter(function (item) { return hasContent(item.page); }).length;
+    el.doneCount.textContent = done;
+    el.totalCount.textContent = PAGES.length;
+    el.savedHint.textContent = hasStorage ? '草稿自动存在这个浏览器里' : '这个浏览器禁用了本地存储，记得常点导出';
+  }
+
+  /* ---------- 编辑 ---------- */
+  function collect() {
+    return {
+      title: el.title.value.trim(),
+      date: el.date.value.trim(),
+      place: el.place.value.trim(),
+      text: el.text.value,
+      note: el.note.value.trim(),
+      tags: normalizeTags(el.tags.value)
+    };
+  }
+
+  function onEdit() {
+    var item = PAGES[index];
+    if (!item) return;
+    drafts[item.page] = collect();
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () {
+      saveDrafts();
+      renderDots();
+      renderProgress();
+    }, 250);
+  }
+
+  /* ---------- 翻页 ---------- */
+  function go(target) {
+    if (target < 0) target = 0;
+    if (target > PAGES.length - 1) target = PAGES.length - 1;
+    if (target === index) return;
+    index = target;
+    render();
+    el.pageImage.scrollIntoView({ block: 'nearest' });
+  }
+
+  function jumpToPage(pageNumber) {
+    var page = Number(pageNumber);
+    for (var i = 0; i < PAGES.length; i++) {
+      if (PAGES[i].page === page) { go(i); return; }
+    }
+  }
+
+  /* ---------- 导出 ---------- */
+  function quote(value) { return JSON.stringify(String(value)); }
+
+  function buildExport() {
+    var year = String(window.NOTEBOOK_YEAR || '2026');
+    var items = [];
+
+    PAGES.forEach(function (item) {
+      var entry = entryOf(item.page);
+      if (!entry.title && !entry.text && !entry.note) return;
+      var parts = ['page: ' + item.page];
+      if (entry.title) parts.push('title: ' + quote(entry.title));
+      if (entry.date) parts.push('date: ' + quote(entry.date));
+      if (entry.place) parts.push('place: ' + quote(entry.place));
+      if (entry.text) parts.push('text: ' + quote(entry.text));
+      if (entry.note) parts.push('note: ' + quote(entry.note));
+      if (entry.tags.length) parts.push('tags: [' + entry.tags.map(quote).join(', ') + ']');
+      items.push('  { ' + parts.join(', ') + ' }');
+    });
+
+    var lines = [];
+    lines.push('/* 由 转录.html 导出，覆盖 data/notebook.js 即可。');
+    lines.push('   换行、引号都已处理好，放心直接用。 */');
+    lines.push('');
+    lines.push('window.NOTEBOOK_YEAR = ' + quote(year) + ';');
+    lines.push('');
+    lines.push('window.NOTEBOOK_TEXT = [');
+    if (items.length) lines.push(items.join(',\n'));
+    lines.push('];');
+    lines.push('');
+    return lines.join('\n');
+  }
+
+  function downloadExport() {
+    var content = buildExport();
+    var blob = new Blob([content], { type: 'text/javascript;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = 'notebook.js';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 3000);
+    var count = PAGES.filter(function (item) { return hasContent(item.page); }).length;
+    toast('已导出，含 ' + count + ' 页。用它覆盖 data/notebook.js');
+  }
+
+  /* 供自测使用 */
+  window.__notebookExport = buildExport;
+
+  /* ---------- 事件 ---------- */
+  el.prev.addEventListener('click', function () { go(index - 1); });
+  el.next.addEventListener('click', function () { go(index + 1); });
+  el.export.addEventListener('click', downloadExport);
+
+  el.jumpTo.addEventListener('change', function () {
+    jumpToPage(el.jumpTo.value);
+  });
+
+  el.dots.addEventListener('click', function (event) {
+    var button = event.target.closest ? event.target.closest('.dot') : null;
+    if (!button) return;
+    go(Number(button.getAttribute('data-index')));
+  });
+
+  el.clearPage.addEventListener('click', function () {
+    var item = PAGES[index];
+    if (!item) return;
+    if (!window.confirm('清空第 ' + item.page + ' 页已经写的内容？')) return;
+    delete drafts[item.page];
+    saveDrafts();
+    render();
+    toast('第 ' + item.page + ' 页已清空');
+  });
+
+  fields.forEach(function (name) {
+    el[name].addEventListener('input', onEdit);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    var tag = (event.target.tagName || '').toLowerCase();
+    var typing = tag === 'input' || tag === 'textarea';
+
+    if (event.ctrlKey && event.key === 'Enter') {
+      event.preventDefault();
+      go(index + 1);
+      return;
+    }
+
+    if (!typing && event.key === 'ArrowLeft') { event.preventDefault(); go(index - 1); }
+    if (!typing && event.key === 'ArrowRight') { event.preventDefault(); go(index + 1); }
+
+    if (event.ctrlKey && (event.key === 's' || event.key === 'S')) {
+      event.preventDefault();
+      downloadExport();
+    }
+  });
+
+  window.addEventListener('beforeunload', function () {
+    if (saveTimer) { clearTimeout(saveTimer); }
+    saveDrafts();
+  });
+
+  /* ---------- 启动 ---------- */
+  if (!PAGES.length) {
+    document.querySelector('.layout').innerHTML =
+      '<p class="empty-state">没有找到页面。请先确认 <code>data/pages.js</code> 存在，' +
+      '并且用 <code>启动网站.bat</code> 或直接打开网站的方式访问这个文件（不要用记事本打开）。</p>';
+    return;
+  }
+
+  el.totalCount.textContent = PAGES.length;
+  render();
+
+  if (!hasStorage) {
+    toast('浏览器禁用了本地存储：草稿只在这个页面里，关掉就没了，请及时导出');
+  }
+})();
+</script>
+</body>
+</html>
