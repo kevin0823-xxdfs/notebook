@@ -11,6 +11,16 @@
   var TILTS = ['-0.7deg', '0.45deg', '-0.25deg', '0.6deg', '-0.5deg', '0.3deg'];
   var DEFAULT_TITLE = '一本小本子 · 高三记事本';
 
+  // 可选的图片 CDN。默认空着（用仓库里的 images/）；
+  // 在国内打开 github.io 很慢时，可以把 data/notebook.js 里
+  // window.NOTEBOOK_CDN 设成 "https://cdn.jsdelivr.net/gh/用户名/仓库@main/"
+  var CDN_BASE = String(window.NOTEBOOK_CDN || '').replace(/\/+$/, '');
+  function assetUrl(path) {
+    if (!path || !CDN_BASE) return path;
+    if (/^https?:\/\//i.test(path) || path.charAt(0) === '/') return path;
+    return CDN_BASE + '/' + path;
+  }
+
   var hasStorage = (function () {
     try {
       localStorage.setItem('__nb_probe__', '1');
@@ -156,6 +166,9 @@
 
     var media = document.createElement('div');
     media.className = 'card-media';
+    if (entry.w && entry.h) {
+      media.style.aspectRatio = entry.w + ' / ' + entry.h;
+    }
     var img = document.createElement('img');
     img.loading = 'lazy';
     img.decoding = 'async';
@@ -165,7 +178,7 @@
         media.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
       }
     });
-    var source = entry.thumb || entry.image || FALLBACK_IMAGE;
+    var source = assetUrl(entry.thumb || entry.image) || FALLBACK_IMAGE;
     attachImage(img, source, FALLBACK_IMAGE);
     media.appendChild(img);
 
@@ -343,8 +356,18 @@
     var orig = document.getElementById('reader-orig');
 
     if (entry.image) {
-      attachImage(img, entry.image, FALLBACK_IMAGE);
-      orig.href = entry.image;
+      var fullSrc = assetUrl(entry.image);
+      var thumbSrc = assetUrl(entry.thumb);
+      // 手机上不下载 1800px 大图，直接用 520px 的缩略图，快很多
+      if (thumbSrc && fullSrc && thumbSrc !== fullSrc) {
+        img.srcset = thumbSrc + ' 520w, ' + fullSrc + ' 1800w';
+        img.sizes = '(max-width: 760px) 100vw, 62vw';
+      } else {
+        img.removeAttribute('srcset');
+        img.removeAttribute('sizes');
+      }
+      attachImage(img, fullSrc, FALLBACK_IMAGE);
+      orig.href = fullSrc;
       orig.removeAttribute('aria-hidden');
       orig.style.pointerEvents = '';
       img.alt = '第 ' + entry.page + ' 页' + (entry.title ? '：' + entry.title : '');
@@ -399,6 +422,14 @@
 
     if (readerBody) readerBody.scrollTop = 0;
     if (readerMedia) readerMedia.scrollTop = 0;
+
+    // 顺手把前后两页也拉下来，翻页就不用等
+    [entries[index - 1], entries[index + 1]].forEach(function (near) {
+      if (near && near.image) {
+        var preload = new Image();
+        preload.src = assetUrl(near.image);
+      }
+    });
   }
 
   function openEntry(entry) {

@@ -1,4 +1,4 @@
-const CDN_PREFIX = "https://cdn.jsdelivr.net/gh/kevin0823-xxdfs/notebook@main";/* ============================================================
+/* ============================================================
    文字内容（你自己编辑的就是这个文件）
    ------------------------------------------------------------
    现在还是空的：36 页照片已经进了网站，但一个字都还没抄。
@@ -23,5 +23,11 @@ const CDN_PREFIX = "https://cdn.jsdelivr.net/gh/kevin0823-xxdfs/notebook@main";/
 
 /* 本子的年份：还没抄日期的时候，首页「年份跨度」就显示这个 */
 window.NOTEBOOK_YEAR = "2026";
+
+/* 图片 CDN：现在开着，图片交给 jsDelivr 送（比 github.io 快好几倍）。
+   照片和文字仍然在 GitHub 仓库里，这里只是换个地方送图。
+   如果哪天图片打不开，把下面这一行改回 window.NOTEBOOK_CDN = ""; 即可。
+   注意网址最后要带斜杠。 */
+window.NOTEBOOK_CDN = "https://cdn.jsdelivr.net/gh/kevin0823-xxdfs/notebook@main/";
 
 window.NOTEBOOK_TEXT = [];

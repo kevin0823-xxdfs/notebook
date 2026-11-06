@@ -910,6 +910,20 @@ h2 {
   .card-body { padding: 12px 12px 14px; }
 
   .demo { text-align: left; }
+
+  /* 手机上关掉毛玻璃和轻微倾斜：滚动更跟手、更省电 */
+  .toolbar {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgba(239, 230, 212, 0.98);
+  }
+
+  .reader-backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .card { transform: none; }
 }
 
 /* ---------- 打印:可以按这个样式做成纸质小册子 ---------- */
