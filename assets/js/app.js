@@ -58,6 +58,7 @@
   }
 
   function attachImage(img, src, fallback) {
+    img.decoding = 'async';
     img.onerror = function () {
       img.onerror = null;
       img.src = fallback;
@@ -354,24 +355,49 @@
   function fillReader(entry, index) {
     var img = document.getElementById('reader-img');
     var orig = document.getElementById('reader-orig');
+    var narrow = window.matchMedia('(max-width: 760px)').matches;
 
     if (entry.image) {
       var fullSrc = assetUrl(entry.image);
-      var thumbSrc = assetUrl(entry.thumb);
-      // 手机上不下载 1800px 大图，直接用 520px 的缩略图，快很多
-      if (thumbSrc && fullSrc && thumbSrc !== fullSrc) {
-        img.srcset = thumbSrc + ' 520w, ' + fullSrc + ' 1800w';
-        img.sizes = '(max-width: 760px) 100vw, 62vw';
-      } else {
+      var thumbSrc = assetUrl(entry.thumb) || fullSrc;
+      img.onclick = null;
+      if (narrow) {
+        // 手机上只下 520px 的小图（每张约 50KB），点一下才换成高清大图
         img.removeAttribute('srcset');
         img.removeAttribute('sizes');
+        img.dataset.full = fullSrc;
+        img.classList.add('can-zoom');
+        img.title = '点一下看高清';
+        img.onclick = function () {
+          if (!img.dataset.full) return;
+          var full = img.dataset.full;
+          img.dataset.full = '';
+          img.classList.remove('can-zoom');
+          img.removeAttribute('title');
+          attachImage(img, full, FALLBACK_IMAGE);
+        };
+        attachImage(img, thumbSrc, FALLBACK_IMAGE);
+      } else {
+        img.dataset.full = '';
+        img.classList.remove('can-zoom');
+        img.removeAttribute('title');
+        if (thumbSrc !== fullSrc) {
+          img.srcset = thumbSrc + ' 520w, ' + fullSrc + ' 1800w';
+          img.sizes = '62vw';
+        } else {
+          img.removeAttribute('srcset');
+          img.removeAttribute('sizes');
+        }
+        attachImage(img, fullSrc, FALLBACK_IMAGE);
       }
-      attachImage(img, fullSrc, FALLBACK_IMAGE);
       orig.href = fullSrc;
       orig.removeAttribute('aria-hidden');
       orig.style.pointerEvents = '';
       img.alt = '第 ' + entry.page + ' 页' + (entry.title ? '：' + entry.title : '');
     } else {
+      img.onclick = null;
+      img.dataset.full = '';
+      img.classList.remove('can-zoom');
       img.src = FALLBACK_IMAGE;
       img.alt = '第 ' + entry.page + ' 页（图片还没传上来）';
       orig.removeAttribute('href');
@@ -423,11 +449,11 @@
     if (readerBody) readerBody.scrollTop = 0;
     if (readerMedia) readerMedia.scrollTop = 0;
 
-    // 顺手把前后两页也拉下来，翻页就不用等
+    // 顺手把前后两页也拉下来，翻页就不用等（手机只拉小图，省流量）
     [entries[index - 1], entries[index + 1]].forEach(function (near) {
       if (near && near.image) {
         var preload = new Image();
-        preload.src = assetUrl(near.image);
+        preload.src = assetUrl(narrow && near.thumb ? near.thumb : near.image);
       }
     });
   }
