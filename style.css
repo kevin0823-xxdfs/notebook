@@ -712,6 +712,16 @@ h2 {
 
 .footer-hint { opacity: 0.85; }
 
+.footer-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(120, 100, 70, 0.22);
+  font-family: var(--kai);
+  font-size: 14.5px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
+
 .noscript {
   margin: 0;
   padding: 18px 24px;
