@@ -60,6 +60,14 @@
   function attachImage(img, src, fallback) {
     img.decoding = 'async';
     img.onerror = function () {
+      // 先退到 dataset.fallback（比如 360px 小图失败就换 520px 缩略图），
+      // 再退到占位图。慢网络下偶尔有一张请求失败时不会留下白块。
+      var next = img.dataset.fallback;
+      if (next) {
+        img.dataset.fallback = '';
+        img.src = next;
+        return;
+      }
       img.onerror = null;
       img.src = fallback;
       img.classList.add('is-fallback');
@@ -75,10 +83,11 @@
     asList(window.NOTEBOOK_PAGES).forEach(function (item) {
       var page = Number(item && item.page);
       if (!isFinite(page)) return;
-      if (!map[page]) map[page] = { page: page, image: '', thumb: '' };
+      if (!map[page]) map[page] = { page: page, image: '', thumb: '', grid: '' };
       if (item.image) {
         map[page].image = String(item.image);
         map[page].thumb = String(item.thumb || item.image);
+        map[page].grid = String(item.grid || item.thumb || item.image);
       }
     });
 
@@ -155,6 +164,7 @@
   function buildCard(entry, index) {
     var card = document.createElement('article');
     card.className = 'card' + (entry.hasText ? '' : ' is-pending');
+    card.dataset.index = String(index);
     card.style.setProperty('--tilt', TILTS[index % TILTS.length]);
 
     var link = document.createElement('a');
@@ -179,7 +189,13 @@
         media.style.aspectRatio = img.naturalWidth + ' / ' + img.naturalHeight;
       }
     });
-    var source = assetUrl(entry.thumb || entry.image) || FALLBACK_IMAGE;
+    // 首页照片墙用 360px 的小图（每张约 20KB），点开阅读器才用 520px / 原图。
+    var gridPath = entry.grid || entry.thumb || entry.image;
+    var thumbPath = entry.thumb || entry.image;
+    if (thumbPath && thumbPath !== gridPath) {
+      img.dataset.fallback = assetUrl(thumbPath);
+    }
+    var source = assetUrl(gridPath) || FALLBACK_IMAGE;
     attachImage(img, source, FALLBACK_IMAGE);
     media.appendChild(img);
 
@@ -234,13 +250,58 @@
     return card;
   }
 
+  /* ---------------- 卡片列表（分批加载） ---------------- */
+
+  // 一次只插 12 张卡片：先把看得见的那几屏铺好，剩下的点一下再加载。
+  // 手机网络差时，36 张一起请求会把慢速通道堵死，表现就是「后面的图一直不出来」。
+  var BATCH_SIZE = 12;
+  var renderedCount = 0;
+  var moreBtn = null;
+
+  function ensureMoreButton() {
+    if (moreBtn || !grid) return;
+    moreBtn = document.createElement('button');
+    moreBtn.type = 'button';
+    moreBtn.className = 'load-more';
+    moreBtn.hidden = true;
+    moreBtn.addEventListener('click', function () {
+      appendCards(BATCH_SIZE);
+      applyFilter();
+    });
+    grid.parentNode.insertBefore(moreBtn, grid.nextSibling);
+  }
+
+  function updateMoreButton(forceHide) {
+    if (!moreBtn) return;
+    var left = entries.length - renderedCount;
+    moreBtn.hidden = Boolean(forceHide) || left <= 0;
+    moreBtn.textContent = left > 0
+      ? '再看 ' + Math.min(BATCH_SIZE, left) + ' 页（还有 ' + left + ' 页）'
+      : '';
+  }
+
+  function appendCards(count) {
+    if (!grid) return;
+    var end = Math.min(renderedCount + count, entries.length);
+    if (end <= renderedCount) return;
+    var fragment = document.createDocumentFragment();
+    for (var i = renderedCount; i < end; i += 1) {
+      fragment.appendChild(buildCard(entries[i], i));
+    }
+    grid.appendChild(fragment);
+    renderedCount = end;
+    updateMoreButton();
+  }
+
   function renderCards() {
     if (!grid) return;
-    var fragment = document.createDocumentFragment();
-    entries.forEach(function (entry, index) {
-      fragment.appendChild(buildCard(entry, index));
-    });
-    grid.appendChild(fragment);
+    ensureMoreButton();
+    appendCards(BATCH_SIZE);
+  }
+
+  function renderAllCards() {
+    if (!grid) return;
+    if (renderedCount < entries.length) appendCards(entries.length);
   }
 
   /* ---------------- 筛选 ---------------- */
@@ -301,10 +362,14 @@
   function applyFilter() {
     if (!grid) return;
     var query = state.query.trim().toLowerCase();
+    var filtering = Boolean(state.pending || state.tag || query);
+    // 一旦开始搜索/筛选，就把剩下的卡片全补上，否则只能在已加载的 12 页里找。
+    if (filtering) renderAllCards();
     var shown = 0;
 
-    Array.prototype.forEach.call(grid.children, function (card, index) {
-      var entry = entries[index];
+    Array.prototype.forEach.call(grid.children, function (card) {
+      var entry = entries[Number(card.dataset.index)];
+      if (!entry) return;
       var ok = true;
       if (state.pending) {
         ok = !entry.hasText;
@@ -320,10 +385,12 @@
 
     if (emptyEl) emptyEl.hidden = shown !== 0;
     if (countEl) {
-      countEl.textContent = shown === entries.length
-        ? '共 ' + entries.length + ' 页'
-        : '显示 ' + shown + ' / ' + entries.length + ' 页';
+      // 分批加载时不能说「显示 12 / 36」，那看着像筛选结果；分页进度交给下面的按钮说明。
+      countEl.textContent = filtering
+        ? '显示 ' + shown + ' / ' + entries.length + ' 页'
+        : '共 ' + entries.length + ' 页';
     }
+    updateMoreButton(filtering);
   }
 
   function updateStats() {

@@ -42,10 +42,13 @@ assets/css/style.css      样式
 assets/js/app.js          翻页、搜索、筛选的逻辑
 data/pages.js             页面清单：哪张图对应第几页
 data/notebook.js          文字内容 ← 你主要编辑这个
-images/pages/             本子的图片
+images/pages/             本子的图片（网页用的大图）
+images/thumbs/            阅读器用的小图（脚本自动生成，520px）
+images/grid/              首页照片墙用的更小的图（脚本自动生成，360px）
 images/placeholder.svg    图片缺失时的占位图
 转录.html                 转录工具：看照片、敲文字、导出 notebook.js
 tools/import-pages.ps1    批量导入照片
+tools/make-grid-thumbs.py 生成首页照片墙的小图（导入后跑一次）
 photos/                   照片先丢这里
 README.md                 本文件
 ```
@@ -57,7 +60,7 @@ README.md                 本文件
 ### A. 先手动试两页（推荐）
 
 1. 把照片放进 `images/pages/`，比如 `page-001.jpg`
-2. 打开 `data/pages.js`，加一行：`{ page: 1, image: "images/pages/page-001.jpg" }`
+2. 打开 `data/pages.js`，加一行：`{ page: 1, image: "images/pages/page-001.jpg" }`（`thumb` 可以省，会自动用大图）
 3. 打开 `data/notebook.js`，照现成的样子加一条，把字抄进去
 4. 刷新网页
 
@@ -80,8 +83,14 @@ README.md                 本文件
 
    也可以右键 `tools/import-pages.ps1` → 使用 PowerShell 运行。若提示脚本被禁止，就右键文件 → 属性 → 解除锁定，或按上面的命令加 `-ExecutionPolicy Bypass`。
 
-3. 脚本会把照片缩到长边 1800px（够清晰，又不至于几百 MB），生成 `images/pages/page-001.jpg`…… 并重写 `data/pages.js`
-4. 然后只需要在 `data/notebook.js` 里一页页补文字
+3. 脚本会把照片缩到长边 1800px（够清晰，又不至于几百 MB），生成 `images/pages/page-001.jpg`……；同时生成一张 520px 的小图放进 `images/thumbs/`；最后重写 `data/pages.js`
+4. 再跑一次下面的命令，生成首页照片墙专用的 360px 小图（每张约 20KB）：
+
+   ```powershell
+   python tools\make-grid-thumbs.py
+   ```
+
+5. 然后只需要在 `data/notebook.js` 里一页页补文字
 
 脚本**只重写 `data/pages.js`，不会动 `data/notebook.js`**，所以已经抄好的文字不会丢。可以放心反复运行。
 
@@ -182,6 +191,42 @@ README.md                 本文件
 > ```
 >
 > 但这只是「请别收录」，不是密码保护。
+
+---
+
+## 打开有点慢？
+
+首页现在做了三层减负：
+
+1. **首屏只铺 12 页**，下面的点「再看 12 页」再加载 —— 慢网络下不会一次性请求几十张图
+2. **照片墙用 360px 小图**（每张约 20KB），而不是 520px（约 50KB）
+3. **点开阅读器才加载大图**（每页约 500KB），还会自动预取前后页；某张图万一请求失败，会自动换小图、再不行才显示占位图，不会留白块
+
+如果还是慢，多半是网络到 GitHub 的问题——`github.io` 在国内经常很慢。
+
+**手机上的额外优化（已内置）**：窄屏时阅读器只下载 520px 的小图（约 50KB），不下载 1800px 大图；顶部工具栏的毛玻璃、卡片的小倾斜在手机上会自动关掉，滚动更跟手。
+
+**办法 1：图片走 jsDelivr（只改一行）**
+
+打开 `data/notebook.js`，把这一行填上：
+
+```js
+window.NOTEBOOK_CDN = "https://cdn.jsdelivr.net/gh/你的用户名/仓库名@main/";
+```
+
+注意最后要带斜杠。图片改由 jsDelivr 送，国内一般快很多；文字和照片仍然在你自己仓库里。
+
+**办法 2：图片再压小一点**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File tools\import-pages.ps1 -RotatePages "1,36" -MaxWidth 1400 -Quality 78
+```
+
+**办法 3：换个托管**
+
+Cloudflare Pages 通常比 GitHub Pages 在国内稳一些；最稳的仍是备案过的国内对象存储/服务器。
+
+**怎么确认是谁慢**：网页里按 `F12` → Network，刷新，看耗时最长的是哪个文件。是 `page-*.jpg` 就压缩或换 CDN；是 `index.html` 本身慢，那就是网络到托管平台的问题。
 
 ---
 
