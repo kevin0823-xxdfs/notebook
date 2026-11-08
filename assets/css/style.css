@@ -280,6 +280,69 @@ code {
 
 .demo-close:hover { background: rgba(120, 100, 70, 0.1); }
 
+/* ---------- 卷首：后记 ---------- */
+
+.preface {
+  padding: clamp(30px, 4.5vw, 52px) 0 0;
+}
+
+.preface-card {
+  max-width: 730px;
+  margin: 0 auto;
+  padding: clamp(26px, 3.8vw, 40px) clamp(22px, 4vw, 46px) clamp(22px, 3.2vw, 32px);
+  border: 1px solid rgba(120, 100, 70, 0.18);
+  border-radius: 5px;
+  background: var(--paper-page);
+  box-shadow: var(--shadow-sm);
+}
+
+.preface-label {
+  margin: 0 0 10px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  color: var(--ink-3);
+}
+
+.preface h2 {
+  margin: 0 0 16px;
+}
+
+.preface-text {
+  margin: 0;
+  font-family: var(--kai);
+  font-size: clamp(15.5px, 1.55vw, 17.5px);
+  line-height: 2.05;
+  color: var(--ink);
+  text-align: justify;
+  text-indent: 2em;
+}
+
+.preface-sign {
+  margin: 20px 0 0;
+  font-family: var(--kai);
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  text-align: right;
+  color: var(--ink-2);
+}
+
+.preface-more {
+  margin: 12px 0 0;
+  text-align: right;
+  font-size: 13px;
+}
+
+.preface-more a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(166, 61, 43, 0.3);
+  padding-bottom: 1px;
+}
+
+.preface-more a:hover {
+  border-bottom-color: var(--accent);
+}
+
 /* ---------- 归档区 ---------- */
 
 .archive {
@@ -648,6 +711,16 @@ h2 {
 .site-footer p { margin: 0; }
 
 .footer-hint { opacity: 0.85; }
+
+.footer-note {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px dashed rgba(120, 100, 70, 0.22);
+  font-family: var(--kai);
+  font-size: 14.5px;
+  letter-spacing: 0.08em;
+  color: var(--accent);
+}
 
 .noscript {
   margin: 0;

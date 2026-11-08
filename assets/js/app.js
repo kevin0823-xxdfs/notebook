@@ -18,6 +18,8 @@
   function assetUrl(path) {
     if (!path || !CDN_BASE) return path;
     if (/^https?:\/\//i.test(path) || path.charAt(0) === '/') return path;
+    // 本地双击打开（file://）时用硬盘上的图，不然新加、还没上传的页会 404
+    if (window.location.protocol === 'file:') return path;
     return CDN_BASE + '/' + path;
   }
 
@@ -670,6 +672,8 @@
 
     var demo = document.getElementById('demo');
     var demoClose = document.getElementById('demo-close');
+    var demoCount = document.getElementById('demo-count');
+    if (demoCount && entries.length) demoCount.textContent = String(entries.length);
     if (demo) {
       var dismissed = false;
       if (hasStorage) {

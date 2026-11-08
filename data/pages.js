@@ -39,5 +39,12 @@ window.NOTEBOOK_PAGES = [
   { page: 33, image: "images/pages/page-033.jpg", thumb: "images/thumbs/page-033.jpg", grid: "images/grid/page-033.jpg", w: 1800, h: 1350 },
   { page: 34, image: "images/pages/page-034.jpg", thumb: "images/thumbs/page-034.jpg", grid: "images/grid/page-034.jpg", w: 1800, h: 1350 },
   { page: 35, image: "images/pages/page-035.jpg", thumb: "images/thumbs/page-035.jpg", grid: "images/grid/page-035.jpg", w: 1800, h: 1350 },
-  { page: 36, image: "images/pages/page-036.jpg", thumb: "images/thumbs/page-036.jpg", grid: "images/grid/page-036.jpg", w: 1800, h: 2400 }
+  { page: 36, image: "images/pages/page-036.jpg", thumb: "images/thumbs/page-036.jpg", grid: "images/grid/page-036.jpg", w: 1800, h: 2400 },
+  { page: 37, image: "images/pages/page-037.jpg", thumb: "images/thumbs/page-037.jpg", grid: "images/grid/page-037.jpg", w: 1280, h: 1707 },
+  { page: 38, image: "images/pages/page-038.jpg", thumb: "images/thumbs/page-038.jpg", grid: "images/grid/page-038.jpg", w: 1280, h: 1707 },
+  { page: 39, image: "images/pages/page-039.jpg", thumb: "images/thumbs/page-039.jpg", grid: "images/grid/page-039.jpg", w: 1280, h: 1707 },
+  { page: 40, image: "images/pages/page-040.jpg", thumb: "images/thumbs/page-040.jpg", grid: "images/grid/page-040.jpg", w: 1707, h: 1280 },
+  { page: 41, image: "images/pages/page-041.jpg", thumb: "images/thumbs/page-041.jpg", grid: "images/grid/page-041.jpg", w: 1707, h: 1280 },
+  { page: 42, image: "images/pages/page-042.jpg", thumb: "images/thumbs/page-042.jpg", grid: "images/grid/page-042.jpg", w: 1707, h: 1280 },
+  { page: 43, image: "images/pages/page-043.jpg", thumb: "images/thumbs/page-043.jpg", grid: "images/grid/page-043.jpg", w: 1707, h: 1280 }
 ];
