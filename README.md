@@ -37,7 +37,7 @@
 
 ```
 启动网站.bat              双击 = 在这台电脑/同一 WiFi 里提供一个网址
-index.html                页面骨架（标题、开场白在这里改）
+index.html                页面骨架（标题、开场白、最前面的「后记」卷首在这里改）
 assets/css/style.css      样式
 assets/js/app.js          翻页、搜索、筛选的逻辑
 data/pages.js             页面清单：哪张图对应第几页
@@ -52,6 +52,8 @@ tools/make-grid-thumbs.py 生成首页照片墙的小图（导入后跑一次）
 photos/                   照片先丢这里
 README.md                 本文件
 ```
+
+> 首页最前面那篇「后记」既写在 `index.html` 里，也和第 36 页的文字一起收在 `data/notebook.js`。改的时候两边一起改——版面看 `index.html`，阅读器看 `notebook.js`。
 
 ---
 
